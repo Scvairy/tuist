@@ -127,21 +127,18 @@ public struct TuistCommand: AsyncParsableCommand {
         }
 
         do {
-            
             try await executeCommand()
-            await printAlerts()
+            self.outputCompletion(logFilePath: logFilePath, shouldOutputLogFilePath: logFilePathDisplayStrategy == .always)
         } catch let error as FatalError {
-            await printAlerts()
-            errorHandler.fatal(error: error)
             self.outputCompletion(logFilePath: logFilePath, shouldOutputLogFilePath: true)
             _exit(exitCode(for: error).rawValue)
         } catch let error as ClientError where error.underlyingError is ServerClientAuthenticationError {
-            await printAlerts()
-            // swiftlint:disable:next force_cast
-            ServiceContext.current?.ui?.error(.alert("\((error.underlyingError as! ServerClientAuthenticationError).description)"))
+            ServiceContext.current?.ui?
+                // swiftlint:disable:next force_cast
+                .error(.alert("\((error.underlyingError as! ServerClientAuthenticationError).description)"))
+            self.outputCompletion(logFilePath: logFilePath, shouldOutputLogFilePath: true)
             _exit(exitCode(for: error).rawValue)
         } catch {
-            printAlerts()
             if let parsedError {
                 handleParseError(parsedError)
             }
@@ -151,26 +148,14 @@ public struct TuistCommand: AsyncParsableCommand {
                 exit(withError: error)
             } else {
                 errorHandler.fatal(error: UnhandledError(error: error))
-                outputCompletion(logFilePath: logFilePath, shouldOutputLogFilePath: true)
+                self.outputCompletion(logFilePath: logFilePath, shouldOutputLogFilePath: true)
                 _exit(exitCode(for: error).rawValue)
             }
         }
     }
-    
-    private static func printAlerts() {
-        let alerts = ServiceContext.current?.alerts?.alerts ?? []
-        for alert in alerts {
-            switch alert {
-            case .success(let successAlert):
-                ServiceContext.current?.ui?.success(successAlert)
-            case .warning(let warningAlert):
-                ServiceContext.current?.ui?.warning(warningAlert)
-            }
-        }
-    }
 
-    private static func outputCompletion(logFilePath: AbsolutePath, shouldOutputLogFilePath: Bool) {
-        WarningController.shared.flush()
+    private static func outputCompletion(logFilePath: AbsolutePath, shouldOutputLogFilePath: Bool)  {
+        ServiceContext.current?.alerts?.print()
         if shouldOutputLogFilePath {
             outputLogFilePath(logFilePath)
         }

@@ -1,6 +1,7 @@
 import Logging
-import ServiceContextModule
+import TuistSupport
 import Noora
+import ServiceContextModule
 
 private enum TestingLogHandlerServiceContextKey: ServiceContextKey {
     typealias Value = TestingLogHandler
@@ -32,6 +33,7 @@ extension ServiceContext {
             return testingLogHandler
         })
         context.ui = NooraMock()
+        context.alerts = AlertController()
         try await ServiceContext.withValue(context) {
             try await closure()
         }

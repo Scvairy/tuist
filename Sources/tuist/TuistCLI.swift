@@ -33,18 +33,12 @@ private enum TuistCLI {
 
             var context = ServiceContext.topLevel
             context.logger = Logger(label: "dev.tuist.cli", factory: loggerHandler)
+            context.ui = Noora()
+            context.alerts = AlertController()
 
-        /// This is the old initialization method and will eventually go away.
-        LoggingSystem.bootstrap(loggerHandler)
-
-        var context = ServiceContext.topLevel
-        context.logger = Logger(label: "dev.tuist.cli", factory: loggerHandler)
-        
-        context.ui = Noora()
-        context.alerts = AlertController()
-
-        try await ServiceContext.withValue(context) {
-            try await TuistCommand.main()
+            try await ServiceContext.withValue(context) {
+                try await TuistCommand.main(logFilePath: logFilePath)
+            }
         }
     }
 }
