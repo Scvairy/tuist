@@ -128,7 +128,7 @@ public struct TuistCommand: AsyncParsableCommand {
 
         do {
             try await executeCommand()
-            self.outputCompletion(logFilePath: logFilePath, shouldOutputLogFilePath: logFilePathDisplayStrategy == .always)
+            outputCompletion(logFilePath: logFilePath, shouldOutputLogFilePath: logFilePathDisplayStrategy == .always)
         } catch let error as FatalError {
             self.outputCompletion(logFilePath: logFilePath, shouldOutputLogFilePath: true)
             _exit(exitCode(for: error).rawValue)
@@ -136,7 +136,7 @@ public struct TuistCommand: AsyncParsableCommand {
             ServiceContext.current?.ui?
                 // swiftlint:disable:next force_cast
                 .error(.alert("\((error.underlyingError as! ServerClientAuthenticationError).description)"))
-            self.outputCompletion(logFilePath: logFilePath, shouldOutputLogFilePath: true)
+            outputCompletion(logFilePath: logFilePath, shouldOutputLogFilePath: true)
             _exit(exitCode(for: error).rawValue)
         } catch {
             if let parsedError {
@@ -148,7 +148,7 @@ public struct TuistCommand: AsyncParsableCommand {
                 exit(withError: error)
             } else {
                 errorHandler.fatal(error: UnhandledError(error: error))
-                self.outputCompletion(logFilePath: logFilePath, shouldOutputLogFilePath: true)
+                outputCompletion(logFilePath: logFilePath, shouldOutputLogFilePath: true)
                 _exit(exitCode(for: error).rawValue)
             }
         }
