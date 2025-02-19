@@ -18,7 +18,7 @@ extension ServiceContext {
 #if DEBUG
     extension ServiceContext {
         public func recordedUI() -> String! {
-            self.alerts?.print()
+            alerts?.print()
             return (ui as? NooraMock)?.description as? String
         }
     }

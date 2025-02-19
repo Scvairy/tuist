@@ -154,7 +154,7 @@ public struct TuistCommand: AsyncParsableCommand {
         }
     }
 
-    private static func outputCompletion(logFilePath: AbsolutePath, shouldOutputLogFilePath: Bool)  {
+    private static func outputCompletion(logFilePath: AbsolutePath, shouldOutputLogFilePath: Bool) {
         ServiceContext.current?.alerts?.print()
         if shouldOutputLogFilePath {
             outputLogFilePath(logFilePath)

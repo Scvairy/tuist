@@ -1,7 +1,7 @@
 import Logging
-import TuistSupport
 import Noora
 import ServiceContextModule
+import TuistSupport
 
 private enum TestingLogHandlerServiceContextKey: ServiceContextKey {
     typealias Value = TestingLogHandler
