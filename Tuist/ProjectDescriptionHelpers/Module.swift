@@ -283,6 +283,7 @@ public enum Module: String, CaseIterable {
                     .external(name: "ZIPFoundation"),
                     .external(name: "Difference"),
                     .external(name: "Command"),
+                    .external(name: "FileLogging"),
                     .external(name: "LoggingOSLog"),
                     .external(name: "Noora")
                 ]
@@ -307,6 +308,7 @@ public enum Module: String, CaseIterable {
                     .external(name: "FileSystem"),
                     .external(name: "SwiftToolsSupport"),
                     .external(name: "XcodeGraph"),
+                    .external(name: "XcodeGraphMapper"),
                     .external(name: "ArgumentParser"),
                     .external(name: "GraphViz"),
                     .external(name: "AnyCodable"),

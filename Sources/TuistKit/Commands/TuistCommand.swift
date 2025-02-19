@@ -42,6 +42,7 @@ public struct TuistCommand: AsyncParsableCommand {
                         ScaffoldCommand.self,
                         TestCommand.self,
                         InspectCommand.self,
+                        XcodeBuildCommand.self,
                     ]
                 ),
                 CommandGroup(
@@ -64,6 +65,7 @@ public struct TuistCommand: AsyncParsableCommand {
     }
 
     public static func main(
+        logFilePath: AbsolutePath,
         _ arguments: [String]? = nil,
         parseAsRoot: ((_ arguments: [String]?) throws -> ParsableCommand) = Self.parseAsRoot
     ) async throws {
@@ -76,17 +78,17 @@ public struct TuistCommand: AsyncParsableCommand {
 
         let config = try await ConfigLoader().loadConfig(path: path)
         let url = try ServerURLService().url(configServerURL: config.url)
-        let analyticsEnabled: Bool
+        let backend: TuistAnalyticsServerBackend?
         if let fullHandle = config.fullHandle {
-            let backend = TuistAnalyticsServerBackend(
+            let tuistAnalyticsServerBackend = TuistAnalyticsServerBackend(
                 fullHandle: fullHandle,
                 url: url
             )
-            let dispatcher = TuistAnalyticsDispatcher(backend: backend)
+            let dispatcher = TuistAnalyticsDispatcher(backend: tuistAnalyticsServerBackend)
             try TuistAnalytics.bootstrap(dispatcher: dispatcher)
-            analyticsEnabled = true
+            backend = tuistAnalyticsServerBackend
         } else {
-            analyticsEnabled = false
+            backend = nil
         }
 
         try await CacheDirectoriesProvider.bootstrap()
@@ -95,6 +97,8 @@ public struct TuistCommand: AsyncParsableCommand {
         let executeCommand: () async throws -> Void
         let processedArguments = Array(processArguments(arguments)?.dropFirst() ?? [])
         var parsedError: Error?
+        var logFilePathDisplayStrategy: LogFilePathDisplayStrategy = .onError
+
         do {
             if processedArguments.first == ScaffoldCommand.configuration.commandName {
                 try await ScaffoldCommand.preprocess(processedArguments)
@@ -104,12 +108,15 @@ public struct TuistCommand: AsyncParsableCommand {
             }
             let command = try parseAsRoot(processedArguments)
             executeCommand = {
+                logFilePathDisplayStrategy = (command as? LogConfigurableCommand)?
+                    .logFilePathDisplayStrategy ?? logFilePathDisplayStrategy
+
                 let trackableCommand = TrackableCommand(
                     command: command,
                     commandArguments: processedArguments
                 )
                 try await trackableCommand.run(
-                    analyticsEnabled: analyticsEnabled
+                    backend: backend
                 )
             }
         } catch {
@@ -126,6 +133,7 @@ public struct TuistCommand: AsyncParsableCommand {
         } catch let error as FatalError {
             await printAlerts()
             errorHandler.fatal(error: error)
+            self.outputCompletion(logFilePath: logFilePath, shouldOutputLogFilePath: true)
             _exit(exitCode(for: error).rawValue)
         } catch let error as ClientError where error.underlyingError is ServerClientAuthenticationError {
             await printAlerts()
@@ -137,11 +145,13 @@ public struct TuistCommand: AsyncParsableCommand {
             if let parsedError {
                 handleParseError(parsedError)
             }
+
             // Exit cleanly
             if exitCode(for: error).rawValue == 0 {
                 exit(withError: error)
             } else {
                 errorHandler.fatal(error: UnhandledError(error: error))
+                outputCompletion(logFilePath: logFilePath, shouldOutputLogFilePath: true)
                 _exit(exitCode(for: error).rawValue)
             }
         }
@@ -157,6 +167,17 @@ public struct TuistCommand: AsyncParsableCommand {
                 ServiceContext.current?.ui?.warning(warningAlert)
             }
         }
+    }
+
+    private static func outputCompletion(logFilePath: AbsolutePath, shouldOutputLogFilePath: Bool) {
+        WarningController.shared.flush()
+        if shouldOutputLogFilePath {
+            outputLogFilePath(logFilePath)
+        }
+    }
+
+    private static func outputLogFilePath(_ logFilePath: AbsolutePath) {
+        ServiceContext.current?.logger?.info("\nLogs are available at \(logFilePath.pathString)")
     }
 
     private static func executeTask(with processedArguments: [String]) async throws {

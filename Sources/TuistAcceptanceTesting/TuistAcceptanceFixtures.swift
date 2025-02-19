@@ -7,6 +7,7 @@ public enum TuistAcceptanceFixtures {
     case appWithComposableArchitecture
     case appWithCustomDefaultConfiguration
     case appWithCustomScheme
+    case appWithExponeaSDK
     case appWithFrameworkAndTests
     case appWithGlobs
     case appWithGoogleMaps
@@ -100,6 +101,8 @@ public enum TuistAcceptanceFixtures {
     case workspaceWithInlineFileHeaderTemplate
     case xcodeApp
     case xcodeProjectWithRegistryAndAlamofire
+    case xcodeProjectWithTests
+    case xcodeProjectWithPackagesAndTests
     case appWithExecutableNonLocalDependencies
     case appWithGeneratedSources
     case custom(String)
@@ -118,6 +121,8 @@ public enum TuistAcceptanceFixtures {
             return "app_with_custom_default_configuration"
         case .appWithCustomScheme:
             return "app_with_custom_scheme"
+        case .appWithExponeaSDK:
+            return "app_with_exponea_sdk"
         case .appWithFrameworkAndTests:
             return "app_with_framework_and_tests"
         case .appWithGlobs:
@@ -302,6 +307,10 @@ public enum TuistAcceptanceFixtures {
             return "xcode_app"
         case .xcodeProjectWithRegistryAndAlamofire:
             return "xcode_project_with_registry_and_alamofire"
+        case .xcodeProjectWithTests:
+            return "xcode_project_with_tests"
+        case .xcodeProjectWithPackagesAndTests:
+            return "xcode_project_with_packages_and_tests"
         case .appWithExecutableNonLocalDependencies:
             return "app_with_executable_non_local_dependencies"
         case .appWithGeneratedSources:

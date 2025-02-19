@@ -583,6 +583,8 @@ Thanks goes to these wonderful people:
     </tr>
     <tr>
       <td align="center" valign="top" width="14.28%"><a href="https://www.snipnotes.de"><img src="https://avatars.githubusercontent.com/u/5102728?v=4" width="100px;" alt=""/><br /><sub><b>Felix Lisczyk</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/lukaswuerzburger"><img src="https://avatars.githubusercontent.com/u/10812458?v=4" width="100px;" alt=""/><br /><sub><b>Lukas Würzburger</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/GetToSet"><img src="https://avatars.githubusercontent.com/u/8158163?v=4" width="100px;" alt=""/><br /><sub><b>Ethan Wong</b></sub></a></td>
     </tr>
   </tbody>
 </table>
