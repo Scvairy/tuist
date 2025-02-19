@@ -1,5 +1,5 @@
 {
-  "originHash" : "41663eecd35ba04a26493922a46c60ff88df2fd60346d474e702e58e86fd498a",
+  "originHash" : "95aa418278909410c37bc6a9861891ddfc7fc10a065fba8e50d7121543d4cdba",
   "pins" : [
     {
       "identity" : "aexml",
@@ -362,21 +362,12 @@
       }
     },
     {
-      "identity" : "xcglogger",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/DaveWoodCom/XCGLogger.git",
-      "state" : {
-        "revision" : "4def3c1c772ca90ad5e7bfc8ac437c3b0b4276cf",
-        "version" : "7.1.5"
-      }
-    },
-    {
       "identity" : "xcodegraph",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/tuist/XcodeGraph.git",
       "state" : {
-        "revision" : "8fbb1c6554cf95bcbeab0bd64a23a29d842a3f39",
-        "version" : "1.6.0"
+        "revision" : "bf78c0692488c743c7d5c0356f14b7fde763ec75",
+        "version" : "1.6.3"
       }
     },
     {
